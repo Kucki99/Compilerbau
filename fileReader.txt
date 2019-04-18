@@ -1,0 +1,16 @@
+$IN
+abc
+$OUT
+abc
+$IN
+abcd
+$OUT
+abcd
+$IN
+$OUT
+$IN
+a
+b
+$OUT
+a
+b

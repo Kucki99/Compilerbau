@@ -1,0 +1,24 @@
+$IN
+41+17
+$OUT
+58.0
+$IN
+41+17*2
+$OUT
+75.0
+$IN
+(41+17)*2
+$OUT
+116.0
+$IN
+(41+17]
+$OUT
+exception: "Unexpected character: ]"
+$IN
+41-11
+$OUT
+30.0
+$IN
+(41+16)/2
+$OUT
+28.5

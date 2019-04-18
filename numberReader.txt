@@ -1,0 +1,15 @@
+$IN
+475
+$OUT
+475
+$IN
+6702
+$OUT
+6702
+$IN
+x
+$OUT
+exception: "not a number"
+$IN
+$OUT
+exception: "not a number"
