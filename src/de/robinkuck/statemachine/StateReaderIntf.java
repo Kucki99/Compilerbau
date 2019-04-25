@@ -8,7 +8,7 @@ public interface StateReaderIntf {
 	// reads a state with all its state transitions and inserts it into the state map
 	public void readState() throws Exception;
 
-	// reads an identifier (stateName)
+	// reads an identifier
 	public String getIdent() throws Exception;
 	
 	// is the given character a legal start of an identifier

@@ -1,10 +1,10 @@
-package de.robinkuck.statemachine;
+package de.robinkuck.lexer;
 
-public class StateMachineMain {
+public class LexerMain {
 
 	public static void main(String[] args) throws Exception {
 		System.err.println("BEGIN");
-		StateMachineTest test = new StateMachineTest("StateMachine.txt");
+		LexerTest test = new LexerTest(args[0]);
 		test.testRun();
 		System.err.println("END");
 	}

@@ -1,0 +1,13 @@
+$IN
+45 + 7 + a
+bc*d
+$OUT
+INTEGER 45
+PLUS
+INTEGER 7
+PLUS
+IDENT a
+IDENT bc
+MUL
+IDENT d
+EOF

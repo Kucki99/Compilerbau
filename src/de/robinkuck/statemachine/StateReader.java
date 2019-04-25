@@ -1,7 +1,5 @@
 package de.robinkuck.statemachine;
 
-import de.robinkuck.filereader.FileReaderIntf;
-
 public class StateReader implements StateReaderIntf {
     private FileReaderIntf m_reader;
     private StateMap m_stateMap;
