@@ -1,0 +1,13 @@
+$IN
+start:(a,start)(b,end)
+end:!
+#
+b
+ab
+a
+ac
+$OUT
+ok
+ok
+unexpected end in state: start
+missing transition in state: start c
