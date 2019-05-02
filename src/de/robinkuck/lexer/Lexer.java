@@ -1,55 +1,105 @@
 package de.robinkuck.lexer;
 
 public class Lexer implements LexerIntf {
+    private FileReaderIntf m_reader;
+    private Token m_nextToken;
 
-    private FileReaderIntf fileReader;
-
-    public Lexer(FileReaderIntf fileReader) {
-        this.fileReader = fileReader;
+    public Lexer(FileReaderIntf reader) throws Exception {
+        m_reader = reader;
+        advance();
     }
 
-    @Override
     public Token lookAheadToken() {
-        return null;
+        return m_nextToken;
     }
 
-    @Override
     public void advance() throws Exception {
-
+        Token.Type tokenType = getTokenType(m_reader.lookAheadChar());
+        m_nextToken = new Token();
+        m_nextToken.m_type = tokenType;
+        if (tokenType == Token.Type.IDENT) {
+            String ident = getIdent();
+            m_nextToken.m_stringValue = ident;
+        } else if (tokenType == Token.Type.INTEGER) {
+            int number = getNumber();
+            m_nextToken.m_intValue = number;
+        } else {
+            m_reader.advance();
+        }
+        while (isWhiteSpace(m_reader.lookAheadChar())) {
+            m_reader.advance();
+        }
     }
 
-    @Override
     public void expect(Token.Type tokenType) throws Exception {
-
+        if (tokenType == m_nextToken.m_type) {
+            advance();
+        } else {
+            throw new Exception("Unexpected Token");
+        }
     }
 
-    @Override
     public Token.Type getTokenType(char firstChar) throws Exception {
-        return null;
+        if (firstChar == 0) {
+            return Token.Type.EOF;
+        } else if ('a' <= firstChar && firstChar <= 'z') {
+            return Token.Type.IDENT;
+        } else if ('A' <= firstChar && firstChar <= 'Z') {
+            return Token.Type.IDENT;
+        } else if ('0' <= firstChar && firstChar <= '9') {
+            return Token.Type.INTEGER;
+        } else if (firstChar == '+') {
+            return Token.Type.PLUS;
+        } else if (firstChar == '-') {
+            return Token.Type.PLUS;
+        } else if (firstChar == '*') {
+            return Token.Type.MUL;
+        } else if (firstChar == '*') {
+            return Token.Type.DIV;
+        } else if (firstChar == '(') {
+            return Token.Type.LPAREN;
+        } else if (firstChar == ')') {
+            return Token.Type.RPAREN;
+        } else if (firstChar == '=') {
+            return Token.Type.ASSIGN;
+        } else {
+            throw new ParserException("Unexpected character: ", Character.toString(firstChar), m_reader.getCurrentLocationMsg(), "");
+        }
     }
 
-    @Override
     public String getIdent() throws Exception {
-        return null;
+        String ident = "";
+        char nextChar = m_reader.lookAheadChar();
+        do {
+            ident += nextChar;
+            m_reader.advance();
+            nextChar = m_reader.lookAheadChar();
+        } while (isIdentifierPart(nextChar));
+        return ident;
     }
 
-    @Override
     public boolean isIdentifierPart(char c) {
-        return false;
+        boolean isPart = ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z');
+        return isPart;
     }
 
-    @Override
     public int getNumber() throws Exception {
-        return 0;
+        int number = 0;
+        char nextChar = m_reader.lookAheadChar();
+        do {
+            number *= 10;
+            number += (int) (nextChar - '0');
+            m_reader.advance();
+            nextChar = m_reader.lookAheadChar();
+        } while (isDigit(nextChar));
+        return number;
     }
 
-    @Override
     public boolean isDigit(char c) {
-        return Character.isDigit(c);
+        return ('0' <= c && c <= '9');
     }
 
-    @Override
     public boolean isWhiteSpace(char c) {
-        return Character.isWhitespace(c);
+        return (c == ' ' || c == '\n' || c == '\r' || c == '\t');
     }
 }

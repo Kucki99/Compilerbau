@@ -1,98 +1,93 @@
 package de.robinkuck.lexer;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 
 public class FileReader implements FileReaderIntf {
+    private InputStream m_inputStream;
+    private Reader m_inputStreamReader;
+    private String m_currentLine;
+    private int m_currentLineNextPos;
+    private boolean m_eofAfterCurrentLine;
+    private char m_nextChar;
+    
+	public FileReader(InputStream inputStream) throws Exception {
+		m_inputStream       = inputStream;
+		m_inputStreamReader = new InputStreamReader(m_inputStream);
+		m_currentLine = new String();
+		m_currentLineNextPos = 0;
+		m_eofAfterCurrentLine = false;
+		advance();
+	}
+	
+	public char lookAheadChar() {
+		return m_nextChar;
+	}
+	
+	public void advance() throws Exception {
+		while (m_currentLineNextPos == m_currentLine.length()) {
+			if (m_eofAfterCurrentLine) {
+				m_nextChar = 0;
+				return;
+			} else {
+				readNextLine();
+				m_currentLineNextPos = 0;
+			}
+		}
+		m_nextChar = m_currentLine.charAt(m_currentLineNextPos);
+		m_currentLineNextPos++;
+	}
+	
+	public void expect(char c) throws Exception {
+		if (m_nextChar != c) {
+			String msg = new String("unexpected character: ");
+			msg += m_nextChar;
+			msg += "\nExpected: ";
+			msg += c;
+			msg += getCurrentLocationMsg();
+			throw new Exception(msg);
+		}
+		advance();
+	}
 
-    private InputStream inputStream;
-    private Reader inputStreamReader;
-    private String currentLine;
-    private boolean endOfAfterCurrentLine;
-    private int currentLineNextPos;
-    private char nextChar;
+	public void expect(String s) throws Exception {
+		for (int i=0; i<s.length(); ++i) {
+			if (m_nextChar != s.charAt(i)) {
+				String msg = new String("unexpected character: ");
+				msg += m_nextChar;
+				msg += "\nExpected: ";
+				msg += s.charAt(i);
+				msg += getCurrentLocationMsg();
+				throw new Exception(msg);
+			}
+			advance();
+		}
+	}
 
-    public FileReader(InputStream inputStream) {
-        this.inputStream = inputStream;
-        this.inputStreamReader = new InputStreamReader(inputStream);
-        this.endOfAfterCurrentLine = false;
-        this.currentLineNextPos = 0;
-    }
+	public String getCurrentLocationMsg() {
+		String location = m_currentLine;
+		for (int i=1; i<m_currentLineNextPos; ++i) {
+			location += ' ';
+		}
+		location += "^\n";
+		return location;
+	}
 
-    @Override
-    public char lookAheadChar() {
-        return nextChar;
-    }
-
-    @Override
-    public void advance() throws Exception {
-        while (currentLineNextPos == currentLine.length()) {
-            if (endOfAfterCurrentLine) {
-                nextChar = 0;
-                return;
-            } else {
-                readNextLine();
-                currentLineNextPos = 0;
-            }
-        }
-        nextChar = currentLine.charAt(currentLineNextPos);
-        currentLineNextPos++;
-    }
-
-    @Override
-    public void expect(char c) throws Exception {
-        if (nextChar != c) {
-            String msg = "unexpected character: ";
-            msg += nextChar;
-            msg += "\nExpected: ";
-            msg += c;
-            msg += getCurrentLocationMsg();
-            throw new Exception(msg);
-        }
-        advance();
-    }
-
-    public void expect(String s) throws Exception {
-        for (int i = 0; i < s.length(); ++i) {
-            if (nextChar != s.charAt(i)) {
-                String msg = "unexpected character: ";
-                msg += nextChar;
-                msg += "\nExpected: ";
-                msg += s.charAt(i);
-                msg += getCurrentLocationMsg();
-                throw new Exception(msg);
-            }
-        }
-        advance();
-    }
-
-    @Override
-    public String getCurrentLocationMsg() {
-        String location = currentLine;
-        for (int i = 1; i < currentLineNextPos; ++i) {
-            location += ' ';
-        }
-        location += "^\n";
-        return location;
-    }
-
-    private void readNextLine() throws Exception {
-        currentLine = new String();
-        while (true) {
-            int nextChar = inputStreamReader.read();
-            if (nextChar == -1) {
-                currentLine += '\n';
-                endOfAfterCurrentLine = true;
-                return;
-            } else if (nextChar == '\r') {
-                continue;
+	private void readNextLine() throws Exception {
+		m_currentLine = new String();
+		while (true) {
+			int nextChar = m_inputStreamReader.read();
+			if (nextChar == -1) {
+            	m_currentLine += '\n';
+				m_eofAfterCurrentLine = true;
+				return;
+			} else if (nextChar == '\r') {
+            	continue;
             } else if (nextChar == '\n') {
-                currentLine += '\n';
-                return;
+            	m_currentLine += '\n';
+            	return;
             } else {
-                currentLine += (char) nextChar;
+            	m_currentLine += (char)nextChar;
             }
-        }
-    }
+		}
+	}
 }
