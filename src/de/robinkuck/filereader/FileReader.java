@@ -1,33 +1,37 @@
 package de.robinkuck.filereader;
 
-import java.io.InputStream;
+import java.io.*;
 
 public class FileReader implements FileReaderIntf {
-
-    char lookAheadChar = 0;
-    InputStream inputStream;
+    private InputStream m_inputStream;
+    private Reader m_inputStreamReader;
+    private char m_nextChar;
 
     public FileReader(InputStream inputStream) throws Exception {
-        this.inputStream = inputStream;
+        m_inputStream = inputStream;
+        m_inputStreamReader = new InputStreamReader(m_inputStream);
         advance();
     }
 
-    @Override
     public char lookAheadChar() {
-        return lookAheadChar;
+        return m_nextChar;
     }
 
-    @Override
     public void advance() throws Exception {
-        int c = inputStream.read();
-        lookAheadChar = (c == -1 ? 0 : (char) c);
+        int nextChar = m_inputStreamReader.read();
+        m_nextChar = (nextChar == -1) ? 0 : (char) nextChar;
     }
 
-    @Override
     public void expect(char c) throws Exception {
-        if (lookAheadChar != c) {
-            throw new Exception("Unexpected character: " + lookAheadChar);
+        if (m_nextChar != c) {
+            String msg = new String("unexpected character: '");
+            msg += m_nextChar;
+            msg += "'";
+            msg += " expected: '";
+            msg += c;
+            msg += "'";
+            throw new Exception(msg);
         }
+        advance();
     }
-
 }

@@ -2,6 +2,7 @@ package de.robinkuck.numbercalc;
 
 import de.robinkuck.filereader.FileReader;
 import de.robinkuck.filereader.FileReaderIntf;
+import de.robinkuck.testbase.TestBase;
 
 import java.io.InputStream;
 

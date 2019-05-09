@@ -1,15 +1,13 @@
 package de.robinkuck.lexer;
 
+import de.robinkuck.testbase.TestBase;
+
 import java.io.InputStream;
 
 public class LexerTest extends TestBase {
 
     public LexerTest(String fileName) throws Exception {
         super(fileName);
-    }
-
-    public LexerTest() throws Exception {
-        super();
     }
 
     public String executeTest(String input) throws Exception {

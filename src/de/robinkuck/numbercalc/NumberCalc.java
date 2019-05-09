@@ -24,11 +24,10 @@ public class NumberCalc implements NumberCalcIntf {
     public int getSum_() throws Exception {
         int sum = 0;
         while (fileReader.lookAheadChar() == '+' || fileReader.lookAheadChar() == '-') {
+            fileReader.advance();
             if (fileReader.lookAheadChar() == '+') {
-                fileReader.advance();
                 sum += getProduct();
             } else {
-                fileReader.advance();
                 sum -= getProduct();
             }
         }

@@ -51,7 +51,7 @@ public class Lexer implements LexerIntf {
         } else if (firstChar == '+') {
             return Token.Type.PLUS;
         } else if (firstChar == '-') {
-            return Token.Type.PLUS;
+            return Token.Type.MINUS;
         } else if (firstChar == '*') {
             return Token.Type.MUL;
         } else if (firstChar == '*') {
